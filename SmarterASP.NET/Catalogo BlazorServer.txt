@@ -1,0 +1,10 @@
+Aplicacion blazor Server
+Net core 5.0
+Autenticacion : cuentas individuales
+Configurar para HTTPS
+
+Deploy
+Nombre del Sitio		site1
+URL de servicio   		https://repuestos24hs-001-site1.htempurl.com:8172/MsDeploy.axd?site=repuestos24hs-001-site1
+Site/Application SiteName	repuestos24hs-001-site1
+Nombre de Usuario		repuestos24hs-001

@@ -1,0 +1,11 @@
+﻿@page "/ArticuloVista/{Id}"
+
+<h3>ArticuloVista</h3>
+
+<div> <p> @Id</p></div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+}
