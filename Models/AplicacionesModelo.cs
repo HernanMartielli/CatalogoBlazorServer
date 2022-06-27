@@ -18,6 +18,6 @@ namespace CatalogoBlazorServer.Models
         public string Observacion { get; set; }
         public int IdVehiculo { get; set; }
         public string NombreImagen { get; set; }
-       
+        public string NombreImagen2 { get; set; }
     }
 }
