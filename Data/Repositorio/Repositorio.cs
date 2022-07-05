@@ -12,7 +12,7 @@ namespace CatalogoBlazorServer.Data.Repositorio
     {
         private readonly ApplicationDbContext _context;
 
-        public Repositorio( ApplicationDbContext context)
+        public Repositorio(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -24,7 +24,7 @@ namespace CatalogoBlazorServer.Data.Repositorio
         }
 
 
-        public  async Task<List<MarcaVehiculo>> ObtenerMarcasVehiculos()
+        public async Task<List<MarcaVehiculo>> ObtenerMarcasVehiculos()
         {
             return await _context.Catalogo_MarcaVehiculo.ToListAsync();
             //return await _context.Catalogo_MarcaVehiculo.FromSqlRaw<MarcaVehiculo>("sp_MarcaVehiculos_Get").ToListAsync();
@@ -33,14 +33,14 @@ namespace CatalogoBlazorServer.Data.Repositorio
 
         public async Task<List<MarcaVehiculo>> ObtenerMarcaVehiculo(int IdSegmentoVehiculo)
         {
-            return await  _context.Catalogo_MarcaVehiculo.FromSqlRaw<MarcaVehiculo>("sp_MarcaVehiculos_GetByIdSegmento {0}", IdSegmentoVehiculo).ToListAsync();
+            return await _context.Catalogo_MarcaVehiculo.FromSqlRaw<MarcaVehiculo>($"sp_MarcaVehiculos_GetByIdSegmento {IdSegmentoVehiculo}" ).ToListAsync();
         }
 
 
         public async Task<List<ModeloVehiculo>> ObtenerModelosVehiculos(int IdSegmentoVehiculo, int IdMarcaVehiculo)
         {
             // return await _context.Catalogo_ModeloVehiculo.ToListAsync();
-            var modelos = await _context.Catalogo_ModeloVehiculo.FromSqlRaw<ModeloVehiculo>("sp_ModelosVehiculos_GetByIdSeg_IdMarca {0}, {1}", IdSegmentoVehiculo, IdMarcaVehiculo).ToListAsync();
+            var modelos = await _context.Catalogo_ModeloVehiculo.FromSqlRaw<ModeloVehiculo>($"sp_ModelosVehiculos_GetByIdSeg_IdMarca {IdSegmentoVehiculo}, {IdMarcaVehiculo}").ToListAsync();
             return modelos;
         }
 
@@ -53,26 +53,30 @@ namespace CatalogoBlazorServer.Data.Repositorio
 
         public async Task<List<VersionModelo>> ObtenerVersionesModelo(int IdSegmentoVehiculo, int IdModeloVehiculo)
         {
-            var versiones = await _context.Catalogo_Vehiculos.FromSqlRaw<VersionModelo>("sp_VersionVehiculos_GetByIdSeg_IdModelo {0}, {1}", IdSegmentoVehiculo, IdModeloVehiculo).ToListAsync();
+            var versiones = await _context.Catalogo_Vehiculos.FromSqlRaw<VersionModelo>($"sp_VersionVehiculos_GetByIdSeg_IdModelo {IdSegmentoVehiculo} , {IdModeloVehiculo}" ).ToListAsync();
             return versiones;
         }
 
         public async Task<List<AplicacionesModelo>> ObtenerAplicacionesModelo(int IdVehiculo)
         {
-            var aplicaciones = await _context.Catalogo_Aplicaciones.FromSqlRaw<AplicacionesModelo>("sp_AplicacionesVehiculos_GetByIdVehiculo {0}", IdVehiculo).ToListAsync();
+            var aplicaciones = await _context.Catalogo_Aplicaciones.FromSqlRaw<AplicacionesModelo>($"sp_AplicacionesVehiculos_GetByIdVehiculo {IdVehiculo}").ToListAsync();
             return aplicaciones;
         }
 
         public async Task<List<Designaciones>> ObtenerDesignaciones()
         {
-            return await _context.Catalogo_Designaciones.FromSqlRaw<Designaciones>("sp_DesigancionesArticulos_Get").ToListAsync();
+           return await _context.Catalogo_Designaciones.FromSqlRaw<Designaciones>("sp_DesigancionesArticulos_Get").ToListAsync();
         }
 
         public async Task<List<AplicacionesDesignacion>> ObtenerAplicacionesDesignacion(int IdDesignacion)
         {
-            //var versiones = await _context.Catalogo_Vehiculos.FromSqlRaw<AplicacionesDesignacion>("sp_ModelosVehiculos_GetByIdDesignacion {0}", IdDesignacion).ToListAsync();
-            var AplicacionesDesig = await _context.Apli.FromSqlRaw("exec sp_ModelosVehiculos_GetByIdDesignacion " + IdDesignacion).ToListAsync();
+            var AplicacionesDesig = await _context.Apli.FromSqlRaw($"exec sp_ModelosVehiculos_GetByIdDesignacion {IdDesignacion}").ToListAsync();
             return AplicacionesDesig;
         }
+
+        
+
+
     }
 }
+    

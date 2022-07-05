@@ -1,7 +1,115 @@
-﻿@page "/ArticulosPorDesignacion" 
+﻿@page "/ArticulosPorDesignacion"
+@using CatalogoBlazorServer.Models
+@using CatalogoBlazorServer.Data.Repositorio
+@inject IRepositorio Repositorio;
+
 
 <h3>Articulos por Designacion</h3>
 
+
+<EditForm Model="@DesignacionesArticulos">
+    <InputSelectNumber Class="form-group "
+                       Value="@idDesignacion" 
+                       ValueChanged="@((int  idDesignacion) => DesignacionHasChanged(idDesignacion) )"
+                       ValueExpression="@(() => idDesignacion)">
+
+        <option value="0">Ingrese la designacion o parte de ella...</option>
+        @foreach (var Designacion in DesignacionesArticulos)
+        {
+            <option value="@Designacion.IdDesignacion">@Designacion.DesignacionSkfGlobal</option>
+        }
+    </InputSelectNumber>
+</EditForm>
+<div class="form-inline">
+    <label class="sr-only" for="nombre-filtro" >Filtrar</label>
+    <input type="text" class="form-control mb-2 mr-sm-2" 
+            @bind=textSearch  placeholder="Ingresar designacion" />
+    <button type="button" class="btn btn-primary mb-2 mr-sm-2"
+            @*@onclick="Filtrar()"*@>Filtrar</button>
+    <button type="button" class="btn btn-danger mb-2"
+            @*@onclick="Limpiar()"*@>Limpiar</button>
+</div>
+
+
+
+@if (AplicacionesDesignaci == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped table-hover table-sm" >
+        <thead>
+            <tr>
+                <th>Designacion SKF</th>
+                <th>Imagen</th>
+                <th>Imagen-2</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Cilindrada</th>
+                <th>Combustible</th>
+                <th>Motor</th>
+                <th>Fecha Inicial</th>
+                <th>Fecha Final</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var aplicacionDesignaci in AplicacionesDesignaci)
+            {
+                <tr >
+                    <td class="align-middle">@aplicacionDesignaci.DesignacionSkfGlobal</td>
+                    <td class="align-middle">
+                        <img src="Images/Products/@aplicacionDesignaci.NombreImagen" alt="imgen"  width=100 height=100 />
+                    </td>
+                    <td class="align-middle">
+                        <img src="Images/Products/@aplicacionDesignaci.NombreImagen2" alt="imgen"  width=100 height=100 />
+                    </td>
+                    <td class="align-middle">@aplicacionDesignaci.Marca</td>
+                    <td class="align-middle">@aplicacionDesignaci.Modelo</td>
+                    <td class="align-middle">@aplicacionDesignaci.Cilindrada</td>
+                    <td class="align-middle">@aplicacionDesignaci.Combustible</td>
+                    <td class="align-middle">@aplicacionDesignaci.Motor</td>
+                    <td class="align-middle">@aplicacionDesignaci.FechaInicial</td>
+                    <td class="align-middle">@aplicacionDesignaci.FechaFinal</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+
 @code {
+    private List<AplicacionesDesignacion> AplicacionesDesignaci = new List<AplicacionesDesignacion>();
+    private List<Designaciones> DesignacionesArticulos = new List<Designaciones>();
+    private int idDesignacion = 0;
+    private string textSearch = string.Empty;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        DesignacionesArticulos = await Repositorio.ObtenerDesignaciones();
+    }
+
+    private async Task DesignacionHasChanged(int idDesig)
+    {
+        AplicacionesDesignaci = null;
+        idDesignacion = idDesig;
+        AplicacionesDesignaci = await Repositorio.ObtenerAplicacionesDesignacion(idDesignacion);
+
+    }
+
+    private async Task Filtrar()
+    {
+        
+    }
+
+    private async Task Limpiar()
+    {
+        
+    }
+
+
 
 }

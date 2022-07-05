@@ -4,22 +4,6 @@
 @inject IRepositorio Repositorio;
 
 
-<EditForm Model="@DesignacionesArticulos">
-    <InputSelectNumber Class="form-group "
-                       Value="@idDesignacion"
-                       ValueChanged="@((int  idDesignacion) => DesignacionHasChanged(idDesignacion) )"
-                       ValueExpression="@(() => idDesignacion)">
-
-        <option value="0">Ingrese la designacion o parte de ella...</option>
-        @foreach (var Designacion in DesignacionesArticulos)
-        {
-            <option value="@Designacion.IdDesignacion">@Designacion.DesignacionSkfGlobal</option>
-        }
-    </InputSelectNumber>
-
-</EditForm>
-
-
     <table class="table table-sm mt-1">
         <thead class="table-dark">
             <tr>
@@ -35,9 +19,9 @@
                 <td>
                     <EditForm Model="@Segmentos">
                         <InputSelect Class="form-group btn-primary dropdown-toggle"
-                                     Value="@idSegmento"
-                                     ValueChanged="@((string  idSegmento) => SegmentoHasChanged(idSegmento) )"
-                                     ValueExpression="@(() => idSegmento)">
+                                        Value="@idSegmento"
+                                        ValueChanged="@((string  idSegmento) => SegmentoHasChanged(idSegmento) )"
+                                        ValueExpression="@(() => idSegmento)">
                             <option value="0">Seleccione el Segmento...</option>
                             @foreach (var segmento in Segmentos)
                             {
@@ -49,10 +33,10 @@
                 <td>
 
                     <EditForm Model="@MarcasVehiculos">
-                        <InputSelectNumber Class="form-group"
-                                           Value="@idMarca"
-                                           ValueChanged="@((int idMarca) => MarcaHasChanged(idMarca) )"
-                                           ValueExpression="@(() => idMarca)">
+                        <InputSelectNumber Class="form-group" id="imputMarcas"
+                                            Value="@idMarca"
+                                            ValueChanged="@((int idMarca) => MarcaHasChanged(idMarca) )"
+                                            ValueExpression="@(() => idMarca)">
                             <option value=0>Seleccione la marca...</option>
                             @foreach (var marcaVehiculo in MarcasVehiculos)
                             {
@@ -67,9 +51,9 @@
                 <td>
                     <EditForm Model="@ModelosVehiculos">
                         <InputSelectNumber Class="form-group"
-                                           Value="@idModelo"
-                                           ValueChanged="@((int idModelo) => ModeloHasChanged(idModelo) )"
-                                           ValueExpression="@(() => idModelo)">
+                                            Value="@idModelo"
+                                            ValueChanged="@((int idModelo) => ModeloHasChanged(idModelo) )"
+                                            ValueExpression="@(() => idModelo)">
 
                             <option value=0>Seleccione el modelo...</option>
                             @foreach (var modeloVehiculo in ModelosVehiculos)
@@ -84,9 +68,9 @@
                 <td>
                     <EditForm Model="@VersionesModelo">
                         <InputSelectNumber Class="form-group"
-                                           Value="@idVehiculo"
-                                           ValueChanged="@((int idVehiculo) => VersionHasChanged(idVehiculo) )"
-                                           ValueExpression="@(() => idVehiculo)">
+                                            Value="@idVehiculo"
+                                            ValueChanged="@((int idVehiculo) => VersionHasChanged(idVehiculo) )"
+                                            ValueExpression="@(() => idVehiculo)">
 
                             <option value=0>Seleccione la version...</option>
                             @foreach (var versionModelo in VersionesModelo)
@@ -98,7 +82,7 @@
                 </td>
 
                 <td>
-                    <button type="button" class="btn btn-dark" @onclick="TraerAplicaciones">Buscar</button>
+                    <button type="button" class="btn btn-dark " @onclick="TraerAplicaciones">Buscar</button>
                 </td>
 
             </tr>
@@ -106,25 +90,41 @@
 
     </table>
 
-    @if (tipoBusqueda == Busqueda.Catalogo)
+    @if (MarcasVehiculos.Count == 0)
     {
-        @if (Aplicaciones == null)
-        {
-        <p><em>Loading...</em></p>
+        <p><em>Cargando datos para seleccion...</em></p>
     }
     else
     {
-        if (grupos.Count() > 1)
-        {   
-            <div>Filtro</div>
-            @foreach (var grupo in grupos)
+        if (AplicacionesMostrar.Count == 0)
+        {
+        <p><em>A la espera de su busqueda...</em></p>
+        }
+        else
+        {
+            if (AplicacionesFiltradas.Count > 0)
+                {
+                    <div  style="display: flex; align-items: baseline;">
+                        <p>Filtrado por <span style="background-color: lightgreen ">@posicionGrupoElejida.ToUpper()</span></p>
+                        <button type="button" class="btn btn-danger ml-5 m-1  btn-sm" @onclick="@(() => QuitarFiltroAplicaciones())">Quitar Filtro</button>
+                    </div>
+                }
+            if (grupos.Count() > 1)
             {
-                <div class="d-inline-flex">
-                    <button class="btn btn-primary m-1" >@grupo.PosicionGrupo</button>
+                 <div  style="display: flex; align-items: baseline;">
+                    <div>Filtro </div>
+                    @foreach (var grupo in grupos)
+                        {
+                            <div>
+                                <button type="button" class="btn btn-outline-primary m-1 btn-sm" @onclick="@(() => FiltrarAplicaciones(@grupo.PosicionGrupo))">@grupo.PosicionGrupo</button>
+                            </div>
+                        }
                 </div>
             }
-        }
-        <table class="table table-striped table-hover table-sm ">
+       
+
+       
+            <table class="table table-striped table-hover table-sm ">
                 <thead>
                     <tr>
                         <th>Grupo</th>
@@ -139,183 +139,157 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var aplicacion in Aplicaciones)
+                    @foreach (var aplicacion in AplicacionesMostrar)
                     {
                     <tr>
-                        <td>@aplicacion.PosicionGrupo</td>
-                        <td>@aplicacion.Posicion</td>
-                        <td>@aplicacion.SubPosicion</td>
-                        <td>@aplicacion.DesignacionSkfGlobal</td>
-                        <td>
+                        <td class="align-middle">@aplicacion.PosicionGrupo</td>
+                        <td class="align-middle">@aplicacion.Posicion</td>
+                        <td class="align-middle">@aplicacion.SubPosicion</td>
+                        <td class="align-middle">@aplicacion.DesignacionSkfGlobal</td>
+                        <td class="align-middle">
                             <a class="nav-link" href="/ArticuloVista/@aplicacion.DesignacionSkfGlobal">
                                 <span class="oi oi-volume-high" aria-hidden="true">Go</span>
                             </a>
                         </td>
-                        <td>@aplicacion.DesignacionSKF</td>
-                        <td>
+                        <td class="align-middle">@aplicacion.DesignacionSKF</td>
+                        <td class="align-middle">
                             <img src="Images/Products/@aplicacion.NombreImagen" alt="imgen"  width=100 height=100 />
                         </td>
-                        <td>
+                        <td class="align-middle">
                             <img src="Images/Products/@aplicacion.NombreImagen2" alt="imgen"  width=100 height=100 />
                         </td>
-                        <td>@aplicacion.Observacion</td>
+                        <td class="align-middle">@aplicacion.Observacion</td>
                     </tr>
                     }
                 </tbody>
             </table>
+       
+
         }
+    
     }
 
-    @if (tipoBusqueda == Busqueda.Designacion)
+
+
+@code {
+
+    private List<AplicacionesModelo> grupos = new List<AplicacionesModelo>();
+
+    private List<SegmentoVehiculo> Segmentos = new List<SegmentoVehiculo>();
+    private string idSegmento = "0";
+
+    private List<MarcaVehiculo> MarcasVehiculos = new List<MarcaVehiculo>();
+    private int idMarca = 0;
+
+    private List<ModeloVehiculo> ModelosVehiculos = new List<ModeloVehiculo>();
+    private int idModelo = 0;
+
+    private List<VersionModelo> VersionesModelo = new List<VersionModelo>();
+    private int idVehiculo = 0;
+
+    private List<AplicacionesModelo> Aplicaciones = new List<AplicacionesModelo>();
+    private List<AplicacionesModelo> AplicacionesFiltradas = new List<AplicacionesModelo>();
+    private List<AplicacionesModelo> AplicacionesMostrar = new List<AplicacionesModelo>();
+    //private int idVehiculo = 0;
+
+    private List<Designaciones> DesignacionesArticulos = new List<Designaciones>();
+    private int idDesignacion = 0;
+
+    private string posicionGrupoElejida = string.Empty; 
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
     {
-        @if (AplicacionesDesignaci == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <table class="table table-striped table-hover table-sm ">
-                <thead>
-                    <tr>
-                        <th>Designacion SKF</th>
-                        <th>Marca</th>
-                        <th>Modelo</th>
-                        <th>Cilindrada</th>
-                        <th>Motor</th>
-                        <th>Fecha Inicial</th>
-                        <th>Fecha Final</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var aplicacionDesignaci in AplicacionesDesignaci)
-                    {
-                        <tr>
-                            <td>@aplicacionDesignaci.DesignacionSkfGlobal</td>
-                            <td>@aplicacionDesignaci.Marca</td>
-                            <td>@aplicacionDesignaci.Modelo</td>
-                            <td>@aplicacionDesignaci.Cilindrada</td>
-                            <td>@aplicacionDesignaci.Motor</td>
-                            <td>@aplicacionDesignaci.FechaInicial</td>
-                            <td>@aplicacionDesignaci.FechaFinal</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        Segmentos = await Repositorio.ObtenerSegmentosVehiculos();
 
-        }
+        //cargamos el select (actualizando el list MarcasVehiculos) con el valor 0 para que tome todas las marcas
+        MarcasVehiculos = await Repositorio.ObtenerMarcaVehiculo(0);
+
+
     }
 
+    //se llama al cambiar el segmento
+    private async Task SegmentoHasChanged(string idSeg)
+    {
+        idMarca = 0;
+        MarcasVehiculos.Clear();
+        idModelo = 0;
+        ModelosVehiculos.Clear();
+        idVehiculo = 0;
+        VersionesModelo.Clear();
+        Aplicaciones.Clear();
 
-    @code {
+        //actualizamos idSegmento para que quede en el select
+        idSegmento = idSeg;
+        //cargamos el select (actualizando el list MarcasVehiculos) con el valor del id del segmento elegido
+        int codigoSegmento = Convert.ToInt32(idSeg);
+        MarcasVehiculos = await Repositorio.ObtenerMarcaVehiculo(codigoSegmento);
+    }
 
-        private enum Busqueda
-        {
-            Catalogo,
-            Designacion,
-            Medida
-        }
-        private Busqueda tipoBusqueda;
-        private List<AplicacionesModelo> grupos = new List<AplicacionesModelo>();
+    private async Task MarcaHasChanged(int idMar)
+    {
+        idModelo = 0;
+        ModelosVehiculos.Clear();
+        idVehiculo = 0;
+        VersionesModelo.Clear();
+        Aplicaciones.Clear();
 
-        private List<SegmentoVehiculo> Segmentos = new List<SegmentoVehiculo>();
-        private string idSegmento = "0";
+        //actualizamos idMarca para que quede en el select
+        idMarca = idMar;
+        int codigoSegmento = Convert.ToInt32(idSegmento);
+        ModelosVehiculos = await Repositorio.ObtenerModelosVehiculos(codigoSegmento, idMarca);
+    }
 
-        private List<MarcaVehiculo> MarcasVehiculos = new List<MarcaVehiculo>();
-        private int idMarca = 0;
+    private async Task ModeloHasChanged(int idMod)
+    {
+        idVehiculo = 0;
+        VersionesModelo.Clear();
+        Aplicaciones.Clear();
 
-        private List<ModeloVehiculo> ModelosVehiculos = new List<ModeloVehiculo>();
-        private int idModelo = 0;
+        //actualizamos idModelo para que quede en el select
+        idModelo = idMod;
+        int codigoSegmento = Convert.ToInt32(idSegmento);
+        VersionesModelo = await Repositorio.ObtenerVersionesModelo(codigoSegmento, idModelo);
+    }
 
-        private List<VersionModelo> VersionesModelo = new List<VersionModelo>();
-        private int idVehiculo = 0;
+    private void VersionHasChanged(int idVehi)
+    {
+        idVehiculo = idVehi;
+    }
 
-        private List<AplicacionesModelo> Aplicaciones = new List<AplicacionesModelo>();
-        //private int idVehiculo = 0;
+    private async Task TraerAplicaciones()
+    {
+        AplicacionesMostrar.Clear();
+        AplicacionesFiltradas.Clear();
+        Aplicaciones = await Repositorio.ObtenerAplicacionesModelo(idVehiculo);
+        AplicacionesMostrar = Aplicaciones;
 
-        private List<Designaciones> DesignacionesArticulos = new List<Designaciones>();
-        private int idDesignacion = 0;
-
-        private List<AplicacionesDesignacion> AplicacionesDesignaci = new List<AplicacionesDesignacion>();
-
-
-
-        protected override async Task OnInitializedAsync()
-        {
-            Segmentos = await Repositorio.ObtenerSegmentosVehiculos();
-
-            //cargamos el select (actualizando el list MarcasVehiculos) con el valor 0 para que tome todas las marcas
-            MarcasVehiculos = await Repositorio.ObtenerMarcaVehiculo(0);
-            DesignacionesArticulos = await Repositorio.ObtenerDesignaciones();
-
-        }
-
-        //se llama al cambiar el segmento
-        private async Task SegmentoHasChanged(string idSeg)
-        {
-            idMarca = 0;
-            MarcasVehiculos.Clear();
-            idModelo = 0;
-            ModelosVehiculos.Clear();
-            idVehiculo = 0;
-            VersionesModelo.Clear();
-            Aplicaciones.Clear();
-
-            //actualizamos idSegmento para que quede en el select
-            idSegmento = idSeg;
-            //cargamos el select (actualizando el list MarcasVehiculos) con el valor del id del segmento elegido
-            int codigoSegmento = Convert.ToInt32(idSeg);
-            MarcasVehiculos = await Repositorio.ObtenerMarcaVehiculo(codigoSegmento);
-        }
-
-        private async Task MarcaHasChanged(int idMar)
-        {
-            idModelo = 0;
-            ModelosVehiculos.Clear();
-            idVehiculo = 0;
-            VersionesModelo.Clear();
-            Aplicaciones.Clear();
-
-            //actualizamos idMarca para que quede en el select
-            idMarca = idMar;
-            int codigoSegmento = Convert.ToInt32(idSegmento);
-            ModelosVehiculos = await Repositorio.ObtenerModelosVehiculos(codigoSegmento, idMarca);
-        }
-
-        private async Task ModeloHasChanged(int idMod)
-        {
-            idVehiculo = 0;
-            VersionesModelo.Clear();
-            Aplicaciones.Clear();
-
-            //actualizamos idModelo para que quede en el select
-            idModelo = idMod;
-            int codigoSegmento = Convert.ToInt32(idSegmento);
-            VersionesModelo = await Repositorio.ObtenerVersionesModelo(codigoSegmento, idModelo);
-        }
-
-        private void VersionHasChanged(int idVehi)
-        {
-            idVehiculo = idVehi;
-        }
-
-        private async Task TraerAplicaciones()
-        {
-            tipoBusqueda = Busqueda.Catalogo;
-
-            //traemos las aplicaciones como resultado de la busqueda
-            Aplicaciones = await Repositorio.ObtenerAplicacionesModelo(idVehiculo);
-
-            //traemos los grupos para presentar el filtro al usuario
-            grupos = Aplicaciones.GroupBy(x => x.PosicionGrupo)
-                                     .Select(PosicionGrupo => PosicionGrupo.First()).ToList();
-            
-        }
-
-        private async Task DesignacionHasChanged(int idDesig)
-        {
-            idDesignacion = idDesig;
-            tipoBusqueda = Busqueda.Designacion;
-            AplicacionesDesignaci = await Repositorio.ObtenerAplicacionesDesignacion(idDesignacion);
-        }
+        //traemos los grupos para presentar el filtro al usuario
+        grupos = AplicacionesMostrar.GroupBy(x => x.PosicionGrupo)
+                                 .Select(PosicionGrupo => PosicionGrupo.First()).ToList();
 
     }
+
+    private  void FiltrarAplicaciones(string posicionGrupo)
+    {
+        AplicacionesFiltradas = Aplicaciones.Where(a => a.PosicionGrupo == posicionGrupo).ToList();
+        AplicacionesMostrar = AplicacionesFiltradas;
+        grupos.Clear();
+        posicionGrupoElejida = posicionGrupo;
+    }
+
+    private  void QuitarFiltroAplicaciones()
+    {
+        AplicacionesMostrar = Aplicaciones;
+        AplicacionesFiltradas.Clear();
+        grupos = AplicacionesMostrar.GroupBy(x => x.PosicionGrupo)
+                                 .Select(PosicionGrupo => PosicionGrupo.First()).ToList();
+        posicionGrupoElejida = string.Empty;
+    }
+        
+       
+ }
+

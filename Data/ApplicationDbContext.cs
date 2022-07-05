@@ -20,8 +20,9 @@ namespace CatalogoBlazorServer.Data
         public DbSet<VersionModelo> Catalogo_Vehiculos { get; set; }
         public DbSet<AplicacionesModelo> Catalogo_Aplicaciones { get; set; }
         public DbSet<Designaciones> Catalogo_Designaciones { get; set; }
-
         public virtual DbSet<AplicacionesDesignacion> Apli  { get; set; }
+
+        
 
 
 
