@@ -22,10 +22,13 @@ namespace CatalogoBlazorServer.Data
         public DbSet<Designaciones> Catalogo_Designaciones { get; set; }
         public virtual DbSet<AplicacionesDesignacion> Apli  { get; set; }
 
-        
+        public DbSet<Rubros> XRUBROS { get; set; }
+        public DbSet<SubRubros> XSUBRUBROS { get; set; }
 
 
 
 
-}
+
+
+    }
 }

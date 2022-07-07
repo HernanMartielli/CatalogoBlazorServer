@@ -29,7 +29,9 @@ namespace CatalogoBlazorServer.Data.Repositorio
         //Designaciones
         public Task<List<Designaciones>> ObtenerDesignaciones();
 
-        
+        //Rubros
+        public Task<List<Rubros>> ObtenerRubros();
+        public Task<List<SubRubros>> ObtenerSubRubros(int rubro);
 
     }
 }

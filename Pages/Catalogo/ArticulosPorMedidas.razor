@@ -1,0 +1,74 @@
+﻿@page "/ArticulosPorMedidas"
+@using CatalogoBlazorServer.Models
+@using CatalogoBlazorServer.Data.Repositorio
+@inject IRepositorio Repositorio;
+
+
+<h3>ArticulosPorMedidas</h3>
+
+<div Style="display: flex; align-items: baseline;  justify-content:center">
+    <EditForm Model="@Rubros">
+        <InputSelect Class="form-group btn-primary dropdown-toggle  "
+                        Value="@idRubro"
+                        ValueChanged="@((string  idRubro) => RubroHasChanged(idRubro) )"
+                        ValueExpression="@(() => idRubro)">
+            <option value="0">Seleccione el Rubro...</option>
+            @foreach (var rubro in Rubros)
+            {
+                <option value="@rubro.Iden">@rubro.Detalle</option>
+            }
+        </InputSelect>
+     </EditForm>
+
+     <EditForm Model="@SubRubros">
+        <InputSelectNumber Class="form-group btn-primary ml-5" id="inputSubRubro"
+                            Value="@idSubRubro"
+                            ValueChanged="@((int idSubRubro) => SubRubroHasChanged(idSubRubro) )"
+                            ValueExpression="@(() => idSubRubro)">
+            <option value=0>Seleccione subrubro...</option>
+            @foreach (var subrubro in SubRubros)
+            {
+                <option value="@subrubro.Iden">@subrubro.Detalle</option>
+            }
+        </InputSelectNumber>
+    </EditForm>
+    <div style="width:100px; height:100px; background-color:brown;">
+        <img   alt="Imagen del Subrubro"/>
+    </div>
+    
+</div>
+
+
+@code {
+
+    private List<Rubros> Rubros = new List<Rubros>();
+    private string idRubro = "0";
+
+    private List<SubRubros> SubRubros = new List<SubRubros>();
+    private int idSubRubro = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Rubros = await Repositorio.ObtenerRubros();
+    }
+
+    private async Task RubroHasChanged(string idRubroElejido)
+    {
+        idSubRubro = 0;
+        SubRubros.Clear();
+
+        //Aplicaciones.Clear();
+
+        //actualizamos idRubro para que quede en el select
+        idRubro = idRubroElejido;
+        //cargamos el select (actualizando el list MarcasVehiculos) con el valor del id del segmento elegido
+        int codigoRubro = Convert.ToInt32(idRubroElejido);
+        SubRubros = await Repositorio.ObtenerSubRubros(codigoRubro);
+    }
+
+    private async Task SubRubroHasChanged(int idSubRubroElejido)
+    {
+        idSubRubro = idSubRubroElejido;
+    }
+
+}

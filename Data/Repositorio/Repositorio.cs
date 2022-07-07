@@ -74,9 +74,16 @@ namespace CatalogoBlazorServer.Data.Repositorio
             return AplicacionesDesig;
         }
 
-        
+        public async Task<List<Rubros>> ObtenerRubros()
+        {
+            //return await _context.Catalogo_Segmento.ToListAsync();
+            return await _context.XRUBROS.ToListAsync();
+        }
 
-
+        public async Task<List<SubRubros>> ObtenerSubRubros(int rubro )
+        {
+            return await _context.XSUBRUBROS.Where(x => x.Rubro == rubro).ToListAsync();
+        }
     }
 }
     
