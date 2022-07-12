@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -80,9 +81,23 @@ namespace CatalogoBlazorServer.Data.Repositorio
             return await _context.XRUBROS.ToListAsync();
         }
 
-        public async Task<List<SubRubros>> ObtenerSubRubros(int rubro )
+        public async Task<List<SubRubro>> ObtenerSubRubros(int rubro )
         {
             return await _context.XSUBRUBROS.Where(x => x.Rubro == rubro).ToListAsync();
+        }
+
+        public async Task<List<DesignacionesMedidas>> ObtenerDesignacionesMedidas(Dictionary<string, string> rubySub, Dictionary<string, string> medidas )
+        {
+            var DesigPorMedidas = await _context.Designaciones_Medidas.FromSqlRaw<DesignacionesMedidas>
+                                        ("EXEC sp_DesigancionesArticulos_GetByMedidas {0}, {1}, {2}, {3}, {4}, {5},{6}", 
+                                        rubySub["Rubro"], rubySub["Subrubro"], medidas["M1"], medidas["M2"], medidas["M3"],
+                                        medidas["M4"], medidas["M5"], medidas["M6"]).ToListAsync();
+        
+            return DesigPorMedidas;
+
+
+
+
         }
     }
 }

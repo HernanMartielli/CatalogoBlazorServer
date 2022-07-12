@@ -2,7 +2,7 @@
 
 namespace CatalogoBlazorServer.Models
 {
-    public class SubRubros
+    public class SubRubro
     {
         [Key]
         public int Iden { get; set; }

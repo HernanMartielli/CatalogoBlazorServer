@@ -138,6 +138,25 @@ app {
     top: 0.5rem;
 }
 
+
+.tituloMedida {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items:center;
+    min-width: 70px;
+    background-color: khaki;
+    border:2px  solid; 
+    padding:2px;
+    margin: 8px;
+}
+
+.valorMedida { 
+    text-align:center;
+}
+
+
+
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {
         display: none;

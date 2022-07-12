@@ -6,7 +6,7 @@
 
 <h3>ArticulosPorMedidas</h3>
 
-<div Style="display: flex; align-items: baseline;  justify-content:center">
+<div Style="display: flex; align-items:flex-start  ;  justify-content:flex-start">
     <EditForm Model="@Rubros">
         <InputSelect Class="form-group btn-primary dropdown-toggle  "
                         Value="@idRubro"
@@ -32,20 +32,159 @@
             }
         </InputSelectNumber>
     </EditForm>
-    <div style="width:100px; height:100px; background-color:brown;">
-        <img   alt="Imagen del Subrubro"/>
-    </div>
-    
+
+    <button type="button" class="btn btn-primary mx-2 "
+            @onclick="BuscarArticulos">Filtrar</button>
+    <button type="button" class="btn btn-danger mx-2"
+            @*@onclick="Limpiar()"*@>Limpiar</button>
+
+    @if (!string.IsNullOrEmpty(imagenSubrubro))
+    { 
+        <div >
+            <img  src="Images/SubRubros/@imagenSubrubro" alt="imgen" width=200 height=200/>
+        </div>
+    }
+   
+       
 </div>
 
+@if (idSubRubro != 0)
+{ 
+    @foreach (SubRubro item in SubRubros)
+    {
+        if (item.Iden==idSubRubro)
+        {
+            <div  Style="display: flex;  align-items: baseline;  justify-content:flex-start">
+                @if (@item.NbreMedida1.Trim()!= string.Empty)
+                {
+                    <div class="tituloMedida">
+                        <label>@item.NbreMedida1.Trim()</label>
+                        <input type="number" pattern="[0-9]+([\.,][0-9]+)?" id="M1" @bind=Med1  maxlength="7" size="4" class="valorMedida"> 
+                    </div>
+                }
+                @if (@item.NbreMedida2.Trim() != string.Empty)
+                {
+                    <div class="tituloMedida">
+                        <label>@item.NbreMedida2.Trim()</label>
+                        <input type="text" id="M2"@bind=Med2 maxlength="7"  size="4" class="valorMedida"> 
+                    </div>
+                }
+                @if (@item.NbreMedida3.Trim() != string.Empty)
+                {
+                    <div class="tituloMedida">
+                        <label>@item.NbreMedida3.Trim()</label>
+                        <input type="text" id="M3" @bind=Med3 maxlength="7"  size="4" class="valorMedida"> 
+                    </div>
+                }
+                @if (@item.NbreMedida4.Trim() != string.Empty)
+                {
+                    <div class="tituloMedida">
+                        <label>@item.NbreMedida4.Trim()</label>
+                        <input type="text" id="M4" @bind=Med4  maxlength="7" size="4" class="valorMedida"> 
+                    </div>
+                }
+                @if (@item.NbreMedida5.Trim() != string.Empty)
+                {
+                    <div class="tituloMedida">
+                        <label>@item.NbreMedida5.Trim()</label>
+                        <input type="text" id="M5" @bind=Med5 maxlength="7" size="4" class="valorMedida"> 
+                    </div>
+                }
+                @if (@item.NbreMedida6.Trim() != string.Empty)
+                {
+                    <div class="tituloMedida">
+                        <label>@item.NbreMedida6.Trim()</label>
+                        <input type="text" id="M6" @bind=Med6  maxlength="7" size="4" class="valorMedida" > 
+                    </div>
+                }
+                @if (@item.NbreInfo1.Trim()!= string.Empty)
+                {
+                    <div class="tituloMedida">
+                        <label>@item.NbreInfo1.Trim()</label>
+                        
+                    </div>
+                }
+                @if (@item.NbreInfo2.Trim() != string.Empty)
+                {
+                    <div class="tituloMedida">
+                        <label>@item.NbreInfo2.Trim()</label>
+                         
+                    </div>
+                }
+            </div>
+        }
+    }
+}
+
+@if (ListadoDesignaciones == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped table-hover table-sm" >
+        <thead>
+            <tr>
+                <th>M1</th>
+                <th>M2</th>
+                <th>M3</th>
+                <th>M4</th>
+                <th>M5</th>
+                <th>M6</th>
+                <th>I1</th>
+                <th>I2</th>
+                <th>Designacion</th>
+                <th>Imagen</th>
+                <th>Imagen-2</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var listado in ListadoDesignaciones)
+            {
+                <tr >
+                    <td class="align-middle">@listado.M1</td>
+                    <td class="align-middle">@listado.M2</td>
+                    <td class="align-middle">@listado.M3</td>
+                    <td class="align-middle">@listado.M4</td>
+                    <td class="align-middle">@listado.M5</td>
+                    <td class="align-middle">@listado.M6</td>
+                    <td class="align-middle">@listado.I1</td>
+                    <td class="align-middle">@listado.I2</td>
+                    <td class="align-middle">@listado.Designacion</td>
+                    <td class="align-middle">
+                        <img src="Images/Products/@listado.foto" alt="imgen"  width=100 height=100 />
+                    </td>
+                    <td class="align-middle">
+                        <img src="Images/Products/@listado.plano" alt="imgen"  width=100 height=100 />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
 
     private List<Rubros> Rubros = new List<Rubros>();
     private string idRubro = "0";
 
-    private List<SubRubros> SubRubros = new List<SubRubros>();
+    private List<SubRubro> SubRubros = new List<SubRubro>();
     private int idSubRubro = 0;
+
+    private string imagenSubrubro= string.Empty;
+
+    private List<DesignacionesMedidas> ListadoDesignaciones = new();
+
+    private string Med1 = string.Empty;
+    private string Med2 = string.Empty;
+    private string Med3 = string.Empty;
+    private string Med4 = string.Empty;
+    private string Med5 = string.Empty;
+    private string Med6 = string.Empty;
+    private string Inf1 = string.Empty;
+    private string Inf2 = string.Empty;
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,9 +205,32 @@
         SubRubros = await Repositorio.ObtenerSubRubros(codigoRubro);
     }
 
-    private async Task SubRubroHasChanged(int idSubRubroElejido)
+    private  void SubRubroHasChanged(int idSubRubroElejido)
     {
         idSubRubro = idSubRubroElejido;
+        var SubRubroelegido = SubRubros.Where(x => x.Iden == idSubRubroElejido).ToList();
+        imagenSubrubro = SubRubroelegido[0].Imagen.ToString();
     }
 
+    private async Task BuscarArticulos()
+    {
+        Dictionary<string, string> dicRubrosySubrubros = new Dictionary<string, string>()
+        {
+            {"Rubro", idRubro },
+            {"Subrubro",idSubRubro.ToString() }
+        };
+
+        
+        Dictionary<string, string> dicMedidas = new Dictionary<string, string>()
+        {
+            {"M1", Med1 },
+            {"M2", Med2 },
+            {"M3", Med3 },
+            {"M4", Med4 },
+            {"M5", Med5 },
+            {"M6", Med6 }
+        };
+
+        ListadoDesignaciones = await Repositorio.ObtenerDesignacionesMedidas(dicRubrosySubrubros,dicMedidas);
+    }
 }

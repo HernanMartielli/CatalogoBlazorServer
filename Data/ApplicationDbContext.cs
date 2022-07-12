@@ -23,7 +23,9 @@ namespace CatalogoBlazorServer.Data
         public virtual DbSet<AplicacionesDesignacion> Apli  { get; set; }
 
         public DbSet<Rubros> XRUBROS { get; set; }
-        public DbSet<SubRubros> XSUBRUBROS { get; set; }
+        public DbSet<SubRubro> XSUBRUBROS { get; set; }
+
+        public DbSet<DesignacionesMedidas> Designaciones_Medidas { get; set; }
 
 
 

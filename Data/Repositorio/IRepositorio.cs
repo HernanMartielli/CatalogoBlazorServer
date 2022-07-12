@@ -31,7 +31,10 @@ namespace CatalogoBlazorServer.Data.Repositorio
 
         //Rubros
         public Task<List<Rubros>> ObtenerRubros();
-        public Task<List<SubRubros>> ObtenerSubRubros(int rubro);
+        public Task<List<SubRubro>> ObtenerSubRubros(int rubro);
+
+        //DesignacionesPorMedidas
+        public Task<List<DesignacionesMedidas>> ObtenerDesignacionesMedidas(Dictionary<string, string> rubySub, Dictionary<string, string> medidas);
 
     }
 }
