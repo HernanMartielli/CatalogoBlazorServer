@@ -78,6 +78,7 @@ namespace CatalogoBlazorServer.Data.Repositorio
         public async Task<List<Rubros>> ObtenerRubros()
         {
             //return await _context.Catalogo_Segmento.ToListAsync();
+            System.Threading.Thread.Sleep(2000);
             return await _context.XRUBROS.ToListAsync();
         }
 
